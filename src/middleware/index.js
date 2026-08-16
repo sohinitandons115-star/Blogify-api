@@ -1,7 +1,7 @@
-const requestLogger = require('./requestLogger');
-const errorHandler = require('./errorHandler');
+const requestLogger = require('./requestlogger');
+const errorHandler = require('./errorhandler');
 
 module.exports = {
-    requestLogger,
-    errorHandler
+  requestLogger,
+  errorHandler
 };

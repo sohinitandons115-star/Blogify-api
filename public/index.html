@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blogify AI</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">Blogify AI</div>
+        <nav>
+          <a href="#posts">Posts</a>
+          <a href="#create-post">Create</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AI-powered publishing</p>
+          <h1>Write smarter blog posts with AI support</h1>
+          <p class="subtitle">
+            Draft ideas, generate summaries, and publish content with a clean blog workflow.
+          </p>
+        </div>
+      </section>
+
+      <section id="create-post" class="panel form-panel">
+        <div class="section-head">
+          <h2>Create a blog post</h2>
+          <button id="generate-ai" class="secondary-btn" type="button">Generate AI insights</button>
+        </div>
+
+        <form id="post-form">
+          <div class="field-grid">
+            <label>
+              <span>Title</span>
+              <input id="title" name="title" type="text" placeholder="AI in Blogging" required />
+            </label>
+
+            <label>
+              <span>Author</span>
+              <input id="author" name="author" type="text" placeholder="Jane" />
+            </label>
+          </div>
+
+          <label>
+            <span>Content</span>
+            <textarea id="content" name="content" rows="8" placeholder="Write your blog content here..." required></textarea>
+          </label>
+
+          <div id="ai-preview" class="ai-preview hidden">
+            <h3>AI Preview</h3>
+            <p><strong>Summary:</strong> <span id="ai-summary"></span></p>
+            <p><strong>Keywords:</strong> <span id="ai-keywords"></span></p>
+            <p><strong>Tone:</strong> <span id="ai-tone"></span></p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">Publish post</button>
+          </div>
+        </form>
+
+        <div id="form-message" class="message" aria-live="polite"></div>
+      </section>
+
+      <section id="posts" class="panel">
+        <div class="section-head">
+          <h2>Latest posts</h2>
+          <button id="refresh-posts" class="secondary-btn" type="button">Refresh</button>
+        </div>
+        <div id="posts-list" class="posts-grid"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

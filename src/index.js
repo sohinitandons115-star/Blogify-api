@@ -2,27 +2,40 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const connectDB = require('./config/db');
+const { requestLogger, errorHandler } = require('./middleware');
+const mainRouter = require('./routes');
+
 const app = express();
 const PORT = process.env.PORT || 1200;
 
-const{ requestLogger, errorHandler } = require('./middleware');
-const mainRouter = require('./routes');
-
-
-//Global middleware
 app.use(express.json());
-app.use(requestLogger);
 app.use(cors());
+app.use(express.static('public'));
+app.use(requestLogger);
 
-//main server
 app.get('/', (req, res) => {
-  res.send(`Server is running in ${process.env.NODE_ENV} mode.`);
+  res.sendFile(require('path').join(__dirname, '../public/index.html'));
 });
 
 app.use('/api/v1', mainRouter);
+
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
 app.use(errorHandler);
 
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+startServer();
