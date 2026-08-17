@@ -9,7 +9,7 @@ router.use((req, res, next) => {
 });
 
 const registrationRules= [
-    body('email').isEmail().withMessage('Please provide a valid email address'),
+    body('email').isEmail().withMessage('Please provide a valid email address').normalizeEmail(),
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long')
 ];
 
@@ -18,5 +18,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', registrationRules, userController.registerUser);
+router.post('/login', registrationRules, userController.loginUser);
 
 module.exports = router;

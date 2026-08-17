@@ -45,9 +45,29 @@ PORT=1200
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/blogify
 OPENAI_API_KEY=your_openai_api_key_here
+JWT_SECRET=replace_with_a_long_random_secret
 ```
 
 ## API examples
+
+### Register and log in
+
+```bash
+POST /api/v1/users/register
+POST /api/v1/users/login
+Content-Type: application/json
+
+{
+  "email": "jane@example.com",
+  "password": "a-strong-password"
+}
+```
+
+Both endpoints return a JWT in `data.token`. Send it when creating, updating, or deleting a post:
+
+```http
+Authorization: Bearer <token>
+```
 
 ### Get all posts
 
