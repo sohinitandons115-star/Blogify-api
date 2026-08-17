@@ -32,14 +32,14 @@ const createPost = async (req, res, next) => {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { title, content, author } = req.body;
+    const { title, content } = req.body;
 
     const aiData = await generateBlogInsights({ title, content });
 
     const post = await Post.create({
       title,
       content,
-      author: author || 'guest',
+      author: req.user.email,
       summary: aiData.summary,
       keywords: aiData.keywords || [],
       tone: aiData.tone || 'neutral'
@@ -53,7 +53,24 @@ const createPost = async (req, res, next) => {
 
 const updatePost = async (req, res, next) => {
   try {
-    const post = await Post.findByIdAndUpdate(req.params.postId, req.body, {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    const existingPost = await Post.findById(req.params.postId);
+    if (!existingPost) {
+      return res.status(404).json({ success: false, message: 'Post not found' });
+    }
+
+    if (existingPost.author !== req.user.email) {
+      return res.status(403).json({ success: false, message: 'You can only update your own posts' });
+    }
+
+    const post = await Post.findByIdAndUpdate(req.params.postId, {
+      title: req.body.title,
+      content: req.body.content
+    }, {
       new: true,
       runValidators: true
     });
@@ -70,11 +87,17 @@ const updatePost = async (req, res, next) => {
 
 const deletePost = async (req, res, next) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params.postId);
+    const post = await Post.findById(req.params.postId);
 
     if (!post) {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
+
+    if (post.author !== req.user.email) {
+      return res.status(403).json({ success: false, message: 'You can only delete your own posts' });
+    }
+
+    await post.deleteOne();
 
     res.status(200).json({ success: true, data: { id: req.params.postId } });
   } catch (error) {

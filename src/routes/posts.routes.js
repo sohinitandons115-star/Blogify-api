@@ -3,6 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const postController = require('../controllers/postController');
+const { authenticate } = require('../middleware');
 
 const postValidationRules = [
   body('title').trim().notEmpty().withMessage('Title is required').isLength({ min: 3 }).withMessage('Title must be at least 3 characters'),
@@ -11,8 +12,8 @@ const postValidationRules = [
 
 router.get('/', postController.getAllPosts);
 router.get('/:postId', postController.getPostById);
-router.post('/', postValidationRules, postController.createPost);
-router.put('/:postId', postValidationRules, postController.updatePost);
-router.delete('/:postId', postController.deletePost);
+router.post('/', authenticate, postValidationRules, postController.createPost);
+router.put('/:postId', authenticate, postValidationRules, postController.updatePost);
+router.delete('/:postId', authenticate, postController.deletePost);
 
 module.exports = router;
